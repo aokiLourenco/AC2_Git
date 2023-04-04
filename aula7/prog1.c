@@ -1,6 +1,6 @@
 #include <detpic32.h>
 
-#define VECTCOR 27
+#define VECTOR 27
 #define N 1
 
 // Interrupt Handler 

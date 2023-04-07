@@ -1,0 +1,20 @@
+1) [6.5 valores]
+Escreva e teste um programa, em liguagem C, que faça todas as configurações necessárias e que mostre nos 6 LEDs ligados aos ortos RE5 a RE0, o padrão 000001, 000010, 000100, ..., 100000, 000001, 000010, ..., 100000, 000001, .... O padrão deve mudar com uma frequência que depende do estado lógico do "switch" DS3 (ligado ao porto RB2): DS3 OFF, f=3Hz; DS3 ON, f=7Hz. O valor da frequência deve ser obtido com o menor erro possível.
+
+Edite o seu programa no ficheiro f11.c
+
+2) [8.5 valores]
+Escreva e teste um programa, em liguagem C, que faça todas as configurações necessárias e que converta o sinal na entrada do módulo A/D, à frequência de 5Hz, com 2 conversões por cada amostra, e que:
+
+i) mostre no ecrã do PC a média dos resultados da conversão, em hexadecimal formatado com 3 dígitos (os valores devem ser apresentados em linhas consecutivas do ecrã);
+
+ii) apresente uma medida do valor obtido, numa escala 0 a 9, no display menos significativo da placa;
+
+iii) a cada nova conversão mude o estado do LED1, ligado ao porto RE1 (valor inicial: RE1=0).
+
+Faça a deteção do fim de conversão por polling. Edite o seu programa no ficheiro f12.c
+
+3) [5.0 valores]
+Escreva e teste um programa, em assembly, que faça todas as configurações necessárias e que mostre nos 4 LEDs, ligados aos portos RE4 e RE1, o padrão 1001, 0110, 1001, 0110, ... (valor inicial: 1001); o padrão deve mudar com uma frequência de  7Hz. O valor do padrão deve também ser mostrado no ecrã do PC, em binário formatado com 4 bits; os valores devem ser apresentados em linhas consecutivas do ecrã. O valor da frequência deve ser obtido com o menor erro possível
+
+Edite o seu programa no ficheiro f13.s

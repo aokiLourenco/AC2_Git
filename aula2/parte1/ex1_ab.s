@@ -43,7 +43,7 @@ while3:  li  $v0,READ_CORE_TIMER
         syscall
 
         li  $t0,K
-        li  $t1,ms
+        la  $t1,ms
 
         mulou	$t0, $t1,20000			# $t0 * $t1 = Hi and Lo registers
         blt     $v0,$t0,while3

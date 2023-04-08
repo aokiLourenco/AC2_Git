@@ -35,9 +35,15 @@ int main(void)
         delay(200)
         AD1CON1bits.ASAM = 1;
         while(IFS1bits.AD1IF == 0);
-    LATEbits.LATE1 = 0;
+        LATEbits.LATE1 = 0;
+        int i;
+        int media = 0;
+        for( i = 0; i < 2; i++ ) {
+            media = (ADC1BUF0 + ADC1BUF1 + ADC1BUF2 + ADC1BUF3) / 4;
+        }
+        send2displays(media);
+        printInt(media, 16 | 3 << 16);
         putChar('\r');
-        printInt(ADC1BUF0, 16 | 3 << 16);
         IFS1bits.AD1IF = 0;
     }
 

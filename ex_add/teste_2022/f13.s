@@ -1,8 +1,8 @@
         .equ    BASE, 0xBF88
         .equ    TRISE, 0x6100
         .equ    LATE, 0x6120
-        .equ    RESET_CORE_TIMER, 11
-        .equ    READ_CORE_TIMER, 12
+        .equ    RESET_CORE_TIMER, 12
+        .equ    READ_CORE_TIMER, 11
         .equ    printInt, 6
         .equ    putChar, 3
         .equ    K, 20000
@@ -33,17 +33,7 @@ loop:   lw      $t1, LATE($t0)
         li      $a0, '\n'
         syscall
 
-delay:  li      $v0, RESET_CORE_TIMER
-        syscall
-
-while:  li      $v0, READ_CORE_TIMER
-        syscall
-
-        li      $t2, K
-        la      $t3, ms
-
-        mulou	$t2, $t3,K
-        blt     $v0,$t2,while
+        jal     delay
 
         lw      $t1, LATE($t0)
         andi    $t1, $t1, 0xFFF0
@@ -59,6 +49,20 @@ while:  li      $v0, READ_CORE_TIMER
         li      $a0, '\n'
         syscall
 
+        jal     delay
+
         j       loop
+        
         jr      $ra
 
+delay:  li      $v0, RESET_CORE_TIMER
+        syscall
+
+while:  li      $v0, READ_CORE_TIMER
+        syscall
+
+        li      $t2, K
+        la      $t3, ms
+
+        mulou	$t2, $t3,K
+        blt     $v0,$t2,while

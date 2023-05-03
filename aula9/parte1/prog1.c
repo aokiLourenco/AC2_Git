@@ -1,25 +1,28 @@
 #include <detpic32.h>
 
+void delay(unsigned int ms);
 void configureAll();
-void send2displays(char value);
-unsigned char toBcd(unsigned char value);
-int voltageConversion(int value);
+void send2Displays(unsigned char value);
 
-volatile int voltage = 0;       // Global variable
+volatile int voltage = 0;
 
 int main(void)
 {
-    configureAll();             // Function to configure all (digital I/O, analog                           
-                                // input, A/D module, timers T1 and T3, interrupts)
-    
+    configureAll();
+
     IFS0bits.T3IF = 0;          // Reset timer T3 interrupt flag
     IFS0bits.T1IF = 0;          // Reset timer T1 interrupt flag
     IFS1bits.AD1IF = 0;         // Reset A/D interrupt flag
 
     EnableInterrupts();
     while (1);    
-
     return 0;
+}
+
+void delay(unsigned int ms)
+{
+    resetCoreTimer();
+    while(readCoreTimer() < 20000 * ms);
 }
 
 void configureAll()
@@ -58,6 +61,40 @@ void configureAll()
     IEC0bits.T3IE = 1;          // Enable timer T3 interrupts
 }
 
+void send2Displays(unsigned char value)
+{
+    static const char display[] = {0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07,0x7F, 0x6F, 0x77, 0x7C, 0x39, 0x5E, 0x79,0x71};
+
+    unsigned char dh = value >> 4;
+    unsigned char dl = value & 0x0F;
+
+    dh = display[dh];
+    dl = display[dl];
+    
+    static int flag = 0;
+
+    if(flag == 0)
+    {
+        LATD = (LATD | 0x0040) & 0xFFDF;
+        LATB = (LATB & 0x80FF) | ((unsigned int)(dh) << 8);
+        flag = 1;
+    }else{
+        LATD = (LATD | 0x0020) & 0xFFBF;
+        LATB = (LATB & 0x80FF) | ((unsigned int)(dl) << 8);
+        flag = 0;
+    }
+}
+
+unsigned char toBcd(unsigned char value)
+{
+    return ((value / 10) << 4) + (value % 10);
+}
+
+int voltageConversion(int value)
+{
+    return (value * 33 + 511) / 1024;
+}
+
 void _int_(4) isr_T1(void)
 {
     AD1CON1bits.ASAM = 1;           // Start conversion
@@ -66,7 +103,7 @@ void _int_(4) isr_T1(void)
 
 void _int_(12) isr_T3(void)
 {
-    send2displays(toBcd(voltage));  // Send "voltage" global variable to displays
+    send2Displays(toBcd(voltage));  // Send "voltage" global variable to displays
     IFS0bits.T3IF = 0;
 }
 
@@ -82,53 +119,3 @@ void _int_(27) isr_adc(void)
     IFS1bits.AD1IF = 0;             // Reset AD1IF flag
 }
 
-void send2displays(char value)
-{
-    static const char display7Scodes[] = {
-                                        0x3F, //0
-                                        0x06, //1
-                                        0x5B, //2
-                                        0x4F, //3
-                                        0x66, //4
-                                        0x6D, //5
-                                        0x7D, //6
-                                        0x07, //7
-                                        0x7F, //8
-                                        0x6F, //9
-                                        0x77, //A
-                                        0x7C, //b
-                                        0x39, //C
-                                        0x5E, //d
-                                        0x79, //E
-                                        0x71  //F
-                                        };
-
-    static int displayFlag = 0;
-
-    unsigned char dh = value >> 4;      // Get the index of the decimal part
-    unsigned char dl = value & 0x0F;    // Get the index of the unitary part
-
-    dh = display7Scodes[dh];
-    dl = display7Scodes[dl];
-
-    if (displayFlag == 0)
-    {
-        LATD = (LATD | 0x0040) & 0xFFDF;    // Dipslay High active and Display Low OFF
-        LATB = (LATB & 0x80FF) | ((unsigned int)(dh)) << 8; // Clean the display and set the right value
-    } else {
-        LATD = (LATD | 0x0020) & 0xFFBF;    // Display High OFF and Display High active
-        LATB = (LATB & 0x80FF) | ((unsigned int)(dl)) << 8; // Clean the display and set the right value
-    }
-
-    displayFlag = !displayFlag;
-}
-
-unsigned char toBcd(unsigned char value)
-{
-    return ((value / 10) << 4) + (value % 10);
-}
-
-int voltageConversion(int value)
-{
-    return (value * 33 + 511) / 1024;
-}

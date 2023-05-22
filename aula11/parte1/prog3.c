@@ -1,5 +1,39 @@
 #include <detpic32.h>
 
+#define VECTOR_UART2 32
+
+void putc1(char byte)
+{
+    // wait while UART2 UTXBF == 1 
+    while(U2STAbits.UTXBF == 1);
+    // Copy "byte" to the U2TXREG register
+    U2TXREG = byte;
+}
+
+void _int_(VECTOR_UART2) isr_uart2(void)
+{
+    if (/*UART2 Rx interrupt flag is set*/  IFS1bits.U2RXIF == 1)
+    {
+    // Read character from FIFO (U2RXREG)
+    char c = U2RXREG;
+    // Send the character using putc()
+
+    if (c == 'a')
+    {
+        LATCbits.LATC14 = 1;
+    } else if (c == 's'){
+        LATCbits.LATC14 = 0;
+    }
+
+    putc1(c);
+    // Clear UART2 Rx interrupt flag
+    IFS1bits.U2RXIF = 0;
+    }
+}
+
+// Altere a rotina de serviço à interrupção e faça as inicializações necessárias, de modo a queo LED ligado ao porto RC14 da placa DETPIC32 acenda quando for recebido o carater 'T',e que apague quando for recebido o caracter 't'.
+
+
 int main(void)
 {
     // Configure UART2: 115200, N, 8, 1
@@ -24,6 +58,8 @@ int main(void)
     IFS1bits.U2RXIF = 0;    // Clear interrupt flag
     
     U2STAbits.URXISEL = 0;  // Interrupt is set when a char is received
+
+    TRISCbits.TRISC14 = 0;  // Configure RC14 as output
 
     EnableInterrupts();
 

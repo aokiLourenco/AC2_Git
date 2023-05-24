@@ -181,12 +181,10 @@ void send2displays(char value)
 
     if(displayFlag == 0)
     {
-        LATEbits.LATE5 = 1;
-        LATEbits.LATE6 = 0;
+        LATD = (LATD & 0xFF9F) | 0xFFBF;
         LATB = (LATB & 0x80FF) | (display[dl] << 8); 
     } else{
-        LATEbits.LATE6 = 1;
-        LATEbits.LATE5 = 0;
+        LATD = (LATD & 0xFF9F) | 0xFFDF;
         LATB = (LATB & 0x80FF) | (display[dh] << 8);
     }
     displayFlag = !displayFlag; 
@@ -194,7 +192,7 @@ void send2displays(char value)
 
 void _int_(8) isr_T2(void)
 {
-    if(displayValue != 1)
+    if(displayValue != -1)
     {
         send2displays(displayValue);
     } else {
@@ -211,22 +209,23 @@ void _int_(32) uart2(void)
         byte = U2RXREG;
         if(byte == '0')
         {
-            LATEbits.LATE0 = 1;
+            LATE = (LATE & 0xFFF0) | 0x0001;
             displayValue = 0x00;
         } else if(byte == '1'){
-            LATEbits.LATE1 = 1;
+            LATE = (LATE & 0xFFF0) | 0x0002;
             displayValue = 0x01;
         } else if ( byte == '2'){
-            LATEbits.LATE2 = 1;
+            LATE = (LATE & 0xFFF0) | 0x0004;
             displayValue = 0x02;
         } else if (byte == '3') {
-            LATEbits.LATE3 = 1;
+            LATE = (LATE & 0xFFF0) | 0x0008;
             displayValue = 0x03;
         } else {
-            LATE = 0x000F;
-            delay(1000);
-            LATE = 0xFFF0;
+            LATE = (LATE & 0xFFF0) | 0x000F;
             displayValue = 0xFF;
+            delay(1000);
+            LATE = LATE & 0xFFF0;
+            displayValue = -1;
         }
 
         IFS1bits.U2RXIF = 0;

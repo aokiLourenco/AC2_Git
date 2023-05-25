@@ -181,10 +181,10 @@ void send2displays(char value)
 
     if(displayFlag == 0)
     {
-        LATD = (LATD & 0xFF9F) | 0xFFBF;
+        LATD = (LATD & 0xFF9F) | 0x0020;
         LATB = (LATB & 0x80FF) | (display[dl] << 8); 
     } else{
-        LATD = (LATD & 0xFF9F) | 0xFFDF;
+        LATD = (LATD & 0xFF9F) | 0x0040;
         LATB = (LATB & 0x80FF) | (display[dh] << 8);
     }
     displayFlag = !displayFlag; 

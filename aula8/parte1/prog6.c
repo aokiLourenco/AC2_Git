@@ -41,8 +41,8 @@ void configureAll()
     TMR1 = 0;                   // Reset timer T1 count register
     T1CONbits.TON = 1;          // Enable timer T1 
 
-    TRISEbits.RE1 = 0;
-    TRISEbits.RE3 = 0;
+    TRISEbits.TRISE1 = 0;
+    TRISEbits.TRISE3 = 0;
 
     IPC1bits.T1IP = 1;          // Interrupt priority 1
     IEC0bits.T1IE = 1;          // Enable timer T1 interrupts

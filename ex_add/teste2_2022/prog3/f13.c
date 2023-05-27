@@ -53,13 +53,14 @@ void _int_(32) isr_U2(void)
 
     putc(cenas);
 
-    if(lowercaseCount >= 'a' && lowercaseCount <= 'z')
+    if(cenas >= 'a' && cenas <= 'z')
     {
         lowercaseCount++;
     }
 
     if(cenas == 0x0A)
     {
+        putc('\n')
         // number of LOWERCASE characters received
         putstr("O numero de minusculas digitadas foi " + lowercaseCount + '\n');
         lowercaseCount = 0;

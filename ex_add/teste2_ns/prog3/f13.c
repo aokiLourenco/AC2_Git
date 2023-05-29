@@ -2,7 +2,7 @@
 
 #define BAUDRATE 9600
 
-volatile int counter = 0b00001111;
+volatile int counter = 15;
 
 void putc(unsigned char byte)
 {
@@ -12,7 +12,7 @@ void putc(unsigned char byte)
 
 void send2LEDs(char valor)
 {
-    LATE = (LATE & 0xFFE1) | valor;
+    LATE = (LATE & 0xFFE1) | (valor << 1);
 }
 
 char getc(void)
@@ -53,14 +53,16 @@ void _int_(32) isr_U2(void)
 {
     char c;
     c = getc();
-    if(c == 'U' && counter > 0b00001111)
+    if(c == 'U')
     {
-        counter = 0;
-        counter = (counter << 1);
+        counter++;
+        if (counter > 15) {
+            counter = 0 ;
+        }
     } else if( (c == 'R') || (counter == 15)) {
-        counter = 0;
         putstr("RESET");
         putc('\n');
+        counter = 0;
     }
 
     IFS1bits.U2RXIF = 0;

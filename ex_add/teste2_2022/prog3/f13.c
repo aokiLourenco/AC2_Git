@@ -62,7 +62,9 @@ void _int_(32) isr_U2(void)
     {
         putc('\n');
         // number of LOWERCASE characters received
-        putstr("O numero de minusculas digitadas foi " + lowercaseCount + '\n');
+        putstr("O numero de minusculas digitadas foi ");
+        putc(lowercaseCount + '0');
+        putc('\n');
         lowercaseCount = 0;
     }
 }

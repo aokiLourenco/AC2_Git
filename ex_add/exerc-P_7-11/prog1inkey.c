@@ -1,10 +1,7 @@
 #include <detpic32.h>
 
 volatile int value = 0;
-<<<<<<< HEAD
-=======
 volatile int key = 0;
->>>>>>> 3d3b57f38463a32a2b751527eeb4971fef4f164c
 
 void delay(unsigned int ms)
 {
@@ -12,18 +9,6 @@ void delay(unsigned int ms)
     while(readCoreTimer() < 20000 * ms);
 }
 
-<<<<<<< HEAD
-void confAll()
-{
-
-}
-
-void send2displays(char value)
-{
-    static const char diplay[] = {0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F, 0x77, 0x7C, 0x39, 0x5E, 0x79, 0x71};
-    unsigned char dl = value >> 4;
-    unsigned char dh = value & 0x0F;
-=======
 void send2displays(char value)
 {
     static const char display[] = {0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F, 0x77, 0x7C, 0x39, 0x5E, 0x79, 0x71};
@@ -66,20 +51,11 @@ void configureall()
     TRISB = TRISB & 0x80FF;
     LATDbits.LATD5 = 0;
     LATDbits.LATD6 = 0;
->>>>>>> 3d3b57f38463a32a2b751527eeb4971fef4f164c
 }
 
 void _int_(8) irs_T2(void)
 {
     send2displays(value);
-<<<<<<< HEAD
-
-}
-
-int main(void)
-{
-    while(1);
-=======
     IFS0bits.T2IF = 0;
 }
 
@@ -125,6 +101,5 @@ int main(void)
             configureLED(key);
         }
     }
->>>>>>> 3d3b57f38463a32a2b751527eeb4971fef4f164c
     return 0;
 }

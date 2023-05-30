@@ -2,7 +2,6 @@
 
 #define N 4
 
-volatile int dutycycle = 0;
 volatile int voltage = 0;
 
 void delay(unsigned int ms)
@@ -60,7 +59,7 @@ int main(void)
     {
         AD1CON1bits.ASAM = 1;
         while(IFS1bits.AD1IF == 0);
-        voltageConversion(voltage);
+        voltage = toBCD(voltageConversion(voltage));
         setPWM(voltage);
         IFS1bits.AD1IF = 0;
         delay(1000);
